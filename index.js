@@ -24,7 +24,8 @@ app.get('/servers', (req, res) => res.json(servers));
 
 app.get('/commands/:id', (req, res) => {
   const id = req.params.id;
-  const cmds = servers[id]?.commands || [];
+  if (!servers[id]) return res.status(404).send('Server not found');
+  const cmds = servers[id].commands || [];
   servers[id].commands = [];
   res.json(cmds);
 });
@@ -32,7 +33,8 @@ app.get('/commands/:id', (req, res) => {
 app.post('/command/:id', (req, res) => {
   const id = req.params.id;
   const { command } = req.body;
-  servers[id]?.commands?.push(command);
+  if (!servers[id]) return res.status(404).send('Server not found');
+  servers[id].commands.push(command);
   res.send('Queued');
 });
 
